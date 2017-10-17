@@ -1,4 +1,7 @@
 using GalaSoft.MvvmLight;
+using System.Collections.Generic;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace BusinessLogic.ViewModel
 {
@@ -29,8 +32,39 @@ namespace BusinessLogic.ViewModel
             {
                 Title = "Hello MVVM Light";
             }
+
+            Canvas ctx = new Canvas();
+            ctx.Width = 150;
+            ctx.Height = 100;
+            ctx.Background = Brushes.Aqua;
+
+            Canvas.SetLeft(ctx, 100);
+            Canvas.SetTop(ctx, 100);
+
+            Canvas ctx2 = new Canvas();
+            ctx2.Width = 150;
+            ctx2.Height = 100;
+            ctx2.Background = Brushes.Red;
+
+            Canvas.SetLeft(ctx2, 350);
+            Canvas.SetTop(ctx2, 150);
+
+            Canvas ctx3 = new Canvas();
+            ctx3.Width = 50;
+            ctx3.Height = 150;
+            ctx3.Background = Brushes.Green;
+
+            Canvas.SetLeft(ctx3, 270);
+            Canvas.SetTop(ctx3, 30);
+
+            LayerItems = new List<Canvas>();
+            LayerItems.Add(ctx);
+            LayerItems.Add(ctx2);
+            LayerItems.Add(ctx3);
         }
 
         public string Title { get; set; }
+        public List<Canvas> LayerItems { get; set; }
+
     }
 }
