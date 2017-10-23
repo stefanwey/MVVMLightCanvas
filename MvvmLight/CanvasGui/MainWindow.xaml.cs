@@ -23,6 +23,14 @@ namespace CanvasGui
         public MainWindow()
         {
             InitializeComponent();
+
+            _beetliList = new BeetliListViewModel();
+
+            _beetliList.TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50 });
+            _beetliList.TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 50 });
+            _beetliList.TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50 });
+
+            this.DataContext = _beetliList;
         }
     }
 }

@@ -5,15 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Height="350" Width="525"
-        DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Title="{Binding Title}">
-        <Grid>
-            <ItemsControl ItemsSource="{Binding LayerItems}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-         </Grid>
+        <ItemsControl ItemsSource="{Binding TheBeetlis}">
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Left" Value="{Binding BeetliLeft}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding BeetliTop}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Rectangle Fill="Yellow"
+                               Width="50"
+                               Height="50"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            
+        </ItemsControl>
 </Window>
