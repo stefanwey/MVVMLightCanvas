@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Height="350" Width="525"
+        DataContext="{Binding Main, Source={StaticResource Locator}}">
+
         <ItemsControl ItemsSource="{Binding TheBeetlis}">
 
             <ItemsControl.ItemsPanel>

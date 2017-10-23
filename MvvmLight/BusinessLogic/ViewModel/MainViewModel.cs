@@ -20,7 +20,7 @@ namespace BusinessLogic.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        public ObservableCollection<BeetliData> TheBeetlis { get; set; }
+        public ObservableCollection<BeetliData> TheBeetlis { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.

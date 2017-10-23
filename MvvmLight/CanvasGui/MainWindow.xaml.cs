@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogic.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +21,13 @@ namespace CanvasGui
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainViewModel _beetliList = null;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            _beetliList = new BeetliListViewModel();
+            _beetliList = new MainViewModel();
 
             _beetliList.TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50 });
             _beetliList.TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 50 });

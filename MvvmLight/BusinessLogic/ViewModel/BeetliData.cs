@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.ViewModel
 {
-    class BeetliData : INotifyPropertyChanged
+    public class BeetliData : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged Members
 
