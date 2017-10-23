@@ -21,7 +21,11 @@ namespace BusinessLogic.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        double _left = 0;
+        private double _left;
+        private double _top;
+        private double _width;
+        private double _height;
+
         public double BeetliLeft
         {
             get
@@ -36,7 +40,6 @@ namespace BusinessLogic.ViewModel
             }
         }
 
-        double _top;
         public double BeetliTop
         {
             get
@@ -50,5 +53,34 @@ namespace BusinessLogic.ViewModel
                 OnPropertyChanged("BeetliTop");
             }
         }
+
+        public double BeetliWidth
+        {
+            get
+            {
+                return _width;
+            }
+
+            set
+            {
+                _width = value;
+                OnPropertyChanged("BeetliWidth");
+            }
+        }
+
+        public double BeetliHeight
+        {
+            get
+            {
+                return _height;
+            }
+
+            set
+            {
+                _height = value;
+                OnPropertyChanged("BeetliHeight");
+            }
+        }
+
     }
 }
