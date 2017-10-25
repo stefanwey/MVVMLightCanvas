@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Height="350" Width="525"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
+        DataContext="{Binding Main, Source={StaticResource Locator}}" MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
-        <ItemsControl ItemsSource="{Binding TheBeetlis}">
+        <ItemsControl ItemsSource="{Binding TheBeetlis}" MouseLeftButtonDown="ItemsControl_MouseLeftButtonDown">
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas/>
+                    <Canvas MouseLeftButtonDown="Canvas_MouseLeftButtonDown"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 

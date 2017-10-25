@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,21 @@ namespace CanvasGui
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("Canvas_MouseLeftButtonDown\t" + e.GetPosition(this).ToString());
+        }
+
+        private void ItemsControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("ItemsControl_MouseLeftButtonDown\t" + e.GetPosition(this).ToString());
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine("Window_MouseLeftButtonDown\t" + e.GetPosition(this).ToString());
         }
     }
 }
