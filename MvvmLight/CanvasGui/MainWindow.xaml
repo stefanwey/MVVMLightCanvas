@@ -23,15 +23,15 @@
             
             <i:EventTrigger EventName="MouseLeftButtonDown">
                 <mvvm:EventToCommand 
-                        Command="{Binding ShowPositionCommand, Mode=OneWay}"
+                        Command="{Binding MouseLeftButtonDownCommand, Mode=OneWay}"
                         EventArgsConverter="{StaticResource MouseButtonEventArgsToPointConverter}"
                         EventArgsConverterParameter="{Binding ElementName=LayoutRoot}"
                         PassEventArgsToCommand="True" />
             </i:EventTrigger>
             
-            <i:EventTrigger EventName="MouseRightButtonDown">
+            <i:EventTrigger EventName="MouseLeftButtonUp">
                 <mvvm:EventToCommand 
-                        Command="{Binding ShowPositionRightCommand, Mode=OneWay}"
+                        Command="{Binding MouseLeftButtonUpCommand, Mode=OneWay}"
                         EventArgsConverter="{StaticResource MouseButtonEventArgsToPointConverter}"
                         EventArgsConverterParameter="{Binding ElementName=LayoutRoot}"
                         PassEventArgsToCommand="True" />
@@ -39,7 +39,7 @@
 
             <i:EventTrigger EventName="MouseMove">
                 <mvvm:EventToCommand 
-                        Command="{Binding ShowPositionMouseMoveCommand, Mode=OneWay}"
+                        Command="{Binding MouseMoveCommand, Mode=OneWay}"
                         EventArgsConverter="{StaticResource MouseEventArgsToPointConverter}"
                         EventArgsConverterParameter="{Binding ElementName=LayoutRoot}"
                         PassEventArgsToCommand="True" />
