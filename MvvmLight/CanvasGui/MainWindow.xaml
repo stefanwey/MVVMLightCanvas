@@ -3,11 +3,52 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
+        xmlns:helpers="clr-namespace:CanvasGui.Helpers"
         mc:Ignorable="d"
         Height="350" Width="525"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
 
-        <ItemsControl ItemsSource="{Binding TheBeetlis}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <helpers:MouseButtonEventArgsToPointConverter x:Key="MouseButtonEventArgsToPointConverter" />
+            <helpers:MouseEventArgsToPointConverter x:Key="MouseEventArgsToPointConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot">
+
+        <i:Interaction.Triggers>
+            
+            <i:EventTrigger EventName="MouseLeftButtonDown">
+                <mvvm:EventToCommand 
+                        Command="{Binding ShowPositionCommand, Mode=OneWay}"
+                        EventArgsConverter="{StaticResource MouseButtonEventArgsToPointConverter}"
+                        EventArgsConverterParameter="{Binding ElementName=LayoutRoot}"
+                        PassEventArgsToCommand="True" />
+            </i:EventTrigger>
+            
+            <i:EventTrigger EventName="MouseRightButtonDown">
+                <mvvm:EventToCommand 
+                        Command="{Binding ShowPositionRightCommand, Mode=OneWay}"
+                        EventArgsConverter="{StaticResource MouseButtonEventArgsToPointConverter}"
+                        EventArgsConverterParameter="{Binding ElementName=LayoutRoot}"
+                        PassEventArgsToCommand="True" />
+            </i:EventTrigger>
+
+            <i:EventTrigger EventName="MouseMove">
+                <mvvm:EventToCommand 
+                        Command="{Binding ShowPositionMouseMoveCommand, Mode=OneWay}"
+                        EventArgsConverter="{StaticResource MouseEventArgsToPointConverter}"
+                        EventArgsConverterParameter="{Binding ElementName=LayoutRoot}"
+                        PassEventArgsToCommand="True" />
+            </i:EventTrigger>
+
+        </i:Interaction.Triggers>
+
+        <ItemsControl ItemsSource="{Binding TheBeetlis}"
+                      Background="ForestGreen">
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -25,10 +66,37 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Rectangle Fill="Yellow"
-                               Width="{Binding BeetliWidth}"
-                               Height="{Binding BeetliHeight}"/>
+                            Width="{Binding BeetliWidth}"
+                            Height="{Binding BeetliHeight}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-            
+
         </ItemsControl>
+
+        <TextBlock HorizontalAlignment="Left"
+                   Text="{Binding LastPosition}"
+                   VerticalAlignment="Bottom"
+                   Foreground="Blue"
+                   FontFamily="Segoe UI Light"
+                   FontSize="10"
+                   IsHitTestVisible="False" />
+
+        <TextBlock HorizontalAlignment="Right"
+                   Text="{Binding LastPositionRight}"
+                   VerticalAlignment="Bottom"
+                   Foreground="Blue"
+                   FontFamily="Segoe UI Light"
+                   FontSize="10"
+                   IsHitTestVisible="False" />
+
+        <TextBlock HorizontalAlignment="Center"
+                   Text="{Binding LastPositionMouseMove}"
+                   VerticalAlignment="Bottom"
+                   Foreground="Blue"
+                   FontFamily="Segoe UI Light"
+                   FontSize="10"
+                   IsHitTestVisible="False" />
+
+    </Grid>
+
 </Window>
