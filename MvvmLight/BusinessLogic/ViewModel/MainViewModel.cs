@@ -56,8 +56,8 @@ namespace BusinessLogic.ViewModel
             TheBeetlis = new ObservableCollection<BeetliData>();
 
             TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
-            //TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
-            //TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
+            TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
+            TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
         }
 
         public string LastPosition
@@ -146,66 +146,73 @@ namespace BusinessLogic.ViewModel
                             double offset_x = point.X - _lastPoint.X;
                             double offset_y = point.Y - _lastPoint.Y;
 
-                            // Get the rectangle's current position.
-                            double new_x = TheBeetlis[0].BeetliLeft;
-                            double new_y = TheBeetlis[0].BeetliTop;
-                            double new_width = TheBeetlis[0].BeetliWidth;
-                            double new_height = TheBeetlis[0].BeetliHeight;
-
-                            // Update the rectangle.
-                            switch (_mouseHitType)
+                            foreach (var beetli in TheBeetlis)
                             {
-                                case HitType.Body:
-                                    new_x += offset_x;
-                                    new_y += offset_y;
-                                    break;
-                                case HitType.UL:
-                                    new_x += offset_x;
-                                    new_y += offset_y;
-                                    new_width -= offset_x;
-                                    new_height -= offset_y;
-                                    break;
-                                case HitType.UR:
-                                    new_y += offset_y;
-                                    new_width += offset_x;
-                                    new_height -= offset_y;
-                                    break;
-                                case HitType.LR:
-                                    new_width += offset_x;
-                                    new_height += offset_y;
-                                    break;
-                                case HitType.LL:
-                                    new_x += offset_x;
-                                    new_width -= offset_x;
-                                    new_height += offset_y;
-                                    break;
-                                case HitType.L:
-                                    new_x += offset_x;
-                                    new_width -= offset_x;
-                                    break;
-                                case HitType.R:
-                                    new_width += offset_x;
-                                    break;
-                                case HitType.B:
-                                    new_height += offset_y;
-                                    break;
-                                case HitType.T:
-                                    new_y += offset_y;
-                                    new_height -= offset_y;
-                                    break;
-                            }
+                                // Check if we have a beetli at the mouse position
+                                if (new Rect(beetli.BeetliLeft, beetli.BeetliTop, beetli.BeetliWidth, beetli.BeetliHeight).Contains(point))
+                                {
+                                    // Get the rectangle's current position.
+                                    double new_x = beetli.BeetliLeft;
+                                    double new_y = beetli.BeetliTop;
+                                    double new_width = beetli.BeetliWidth;
+                                    double new_height = beetli.BeetliHeight;
 
-                            // Don't use negative width or height.
-                            if ((new_width > 0) && (new_height > 0))
-                            {
-                                // Update the rectangle.
-                                TheBeetlis[0].BeetliLeft = new_x;
-                                TheBeetlis[0].BeetliTop = new_y;
-                                TheBeetlis[0].BeetliWidth = new_width;
-                                TheBeetlis[0].BeetliHeight = new_height;
+                                    // Update the rectangle.
+                                    switch (_mouseHitType)
+                                    {
+                                        case HitType.Body:
+                                            new_x += offset_x;
+                                            new_y += offset_y;
+                                            break;
+                                        case HitType.UL:
+                                            new_x += offset_x;
+                                            new_y += offset_y;
+                                            new_width -= offset_x;
+                                            new_height -= offset_y;
+                                            break;
+                                        case HitType.UR:
+                                            new_y += offset_y;
+                                            new_width += offset_x;
+                                            new_height -= offset_y;
+                                            break;
+                                        case HitType.LR:
+                                            new_width += offset_x;
+                                            new_height += offset_y;
+                                            break;
+                                        case HitType.LL:
+                                            new_x += offset_x;
+                                            new_width -= offset_x;
+                                            new_height += offset_y;
+                                            break;
+                                        case HitType.L:
+                                            new_x += offset_x;
+                                            new_width -= offset_x;
+                                            break;
+                                        case HitType.R:
+                                            new_width += offset_x;
+                                            break;
+                                        case HitType.B:
+                                            new_height += offset_y;
+                                            break;
+                                        case HitType.T:
+                                            new_y += offset_y;
+                                            new_height -= offset_y;
+                                            break;
+                                    }
 
-                                // Save the mouse's new location.
-                                _lastPoint = point;
+                                    // Don't use negative width or height.
+                                    if ((new_width > 0) && (new_height > 0))
+                                    {
+                                        // Update the rectangle.
+                                        beetli.BeetliLeft = new_x;
+                                        beetli.BeetliTop = new_y;
+                                        beetli.BeetliWidth = new_width;
+                                        beetli.BeetliHeight = new_height;
+
+                                        // Save the mouse's new location.
+                                        _lastPoint = point;
+                                    }
+                                }
                             }
                         }
 
@@ -222,10 +229,10 @@ namespace BusinessLogic.ViewModel
                 double top = beetli.BeetliTop;
                 double right = left + beetli.BeetliWidth;
                 double bottom = top + beetli.BeetliHeight;
-                if (point.X < left) return HitType.None;
-                if (point.X > right) return HitType.None;
-                if (point.Y < top) return HitType.None;
-                if (point.Y > bottom) return HitType.None;
+                if (point.X < left) continue;
+                if (point.X > right) continue;
+                if (point.Y < top) continue;
+                if (point.Y > bottom) continue;
 
                 const double GAP = 10;
                 if (point.X - left < GAP)
