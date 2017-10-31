@@ -82,5 +82,10 @@ namespace BusinessLogic.ViewModel
             }
         }
 
+        public bool DummyCheck()
+        {
+            return true;
+        }
+
     }
 }
