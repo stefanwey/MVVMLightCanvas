@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
+using System.Windows.Input;
 
 namespace BusinessLogic.ViewModel
 {
@@ -22,17 +23,20 @@ namespace BusinessLogic.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        #region private Fields
+
         // The part of the rectangle the mouse is over.
         private enum HitType
         {
             None, Body, UL, UR, LR, LL, L, R, T, B
         };
 
-        public const string LastPositionPropertyName = "LastPosition";
+        private const string ShowCursorPropertyName = "ShowCursor";
 
         private string _lastPosition = "Click somewhere";
         private string _lastPositionRight = "Click somewhere";
         private string _lastPositionMouseMove = "Click somewhere";
+        private Cursor _showCursor;
         private RelayCommand<Point> _mouseLeftButtonDownCommand;
         private RelayCommand<Point> _mouseLeftButtonUpCommand;
         private RelayCommand<Point> _mouseMoveCommand;
@@ -46,19 +50,11 @@ namespace BusinessLogic.ViewModel
         // The part of the rectangle under the mouse.
         HitType _mouseHitType = HitType.None;
 
+        #endregion private Fields
+
+        #region public Properties
+
         public ObservableCollection<BeetliData> TheBeetlis { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
-        public MainViewModel()
-        {
-            TheBeetlis = new ObservableCollection<BeetliData>();
-
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
-        }
 
         public string LastPosition
         {
@@ -93,6 +89,43 @@ namespace BusinessLogic.ViewModel
                 Set(() => LastPositionMouseMove, ref _lastPositionMouseMove, value);
             }
         }
+        public Cursor ShowCursor
+        {
+            get
+            {
+                return _showCursor;
+            }
+            set
+            {
+                if (_showCursor == value)
+                {
+                    return;
+                }
+
+                _showCursor = value;
+                RaisePropertyChanged(ShowCursorPropertyName);
+            }
+        }
+
+        #endregion public Properties
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the MainViewModel class.
+        /// </summary>
+        public MainViewModel()
+        {
+            TheBeetlis = new ObservableCollection<BeetliData>();
+
+            TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
+            TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
+            TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
+        }
+
+        #endregion Constructor
+
+        #region public Methods
 
         public RelayCommand<Point> MouseLeftButtonDownCommand
         {
@@ -116,7 +149,7 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _mouseLeftButtonUpCommand ?? (_mouseLeftButtonUpCommand = 
+                return _mouseLeftButtonUpCommand ?? (_mouseLeftButtonUpCommand =
                     new RelayCommand<Point>(point =>
                     {
                         LastPositionRight = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
@@ -220,6 +253,10 @@ namespace BusinessLogic.ViewModel
             }
         }
 
+        #endregion public Methods
+
+        #region private Methods
+
         // Return a HitType value to indicate what is at the point.
         private HitType SetHitType(ObservableCollection<BeetliData> beetlies, Point point)
         {
@@ -261,37 +298,34 @@ namespace BusinessLogic.ViewModel
         // Set a mouse cursor appropriate for the current hit type.
         private void SetMouseCursor()
         {
-            //// See what cursor we should display.
-            //Cursor desired_cursor = Cursors.Arrow;
-            //switch (MouseHitType)
-            //{
-            //    case HitType.None:
-            //        desired_cursor = Cursors.Arrow;
-            //        break;
-            //    case HitType.Body:
-            //        desired_cursor = Cursors.ScrollAll;
-            //        break;
-            //    case HitType.UL:
-            //    case HitType.LR:
-            //        desired_cursor = Cursors.SizeNWSE;
-            //        break;
-            //    case HitType.LL:
-            //    case HitType.UR:
-            //        desired_cursor = Cursors.SizeNESW;
-            //        break;
-            //    case HitType.T:
-            //    case HitType.B:
-            //        desired_cursor = Cursors.SizeNS;
-            //        break;
-            //    case HitType.L:
-            //    case HitType.R:
-            //        desired_cursor = Cursors.SizeWE;
-            //        break;
-            //}
-
-            //// Display the desired cursor.
-            //if (Cursor != desired_cursor) Cursor = desired_cursor;
+            // See what cursor we should display.
+            switch (_mouseHitType)
+            {
+                case HitType.None:
+                    ShowCursor = Cursors.Arrow;
+                    break;
+                case HitType.Body:
+                    ShowCursor = Cursors.ScrollAll;
+                    break;
+                case HitType.UL:
+                case HitType.LR:
+                    ShowCursor = Cursors.SizeNWSE;
+                    break;
+                case HitType.LL:
+                case HitType.UR:
+                    ShowCursor = Cursors.SizeNESW;
+                    break;
+                case HitType.T:
+                case HitType.B:
+                    ShowCursor = Cursors.SizeNS;
+                    break;
+                case HitType.L:
+                case HitType.R:
+                    ShowCursor = Cursors.SizeWE;
+                    break;
+            }
         }
-
+ 
+        #endregion private Methods
     }
 }

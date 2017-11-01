@@ -48,7 +48,8 @@
         </i:Interaction.Triggers>
 
         <ItemsControl ItemsSource="{Binding TheBeetlis}"
-                      Background="ForestGreen">
+                      Background="ForestGreen"
+                      Cursor="{Binding ShowCursor}">
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
