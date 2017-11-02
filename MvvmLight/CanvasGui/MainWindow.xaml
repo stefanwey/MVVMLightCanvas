@@ -7,8 +7,8 @@
         xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
         xmlns:helpers="clr-namespace:CanvasGui.Helpers"
         mc:Ignorable="d"
-        Height="{Binding GartenHeight}"
-        Width="{Binding GartenWidth}"
+        Height="{Binding GartenHeight, Mode=TwoWay}"
+        Width="{Binding GartenWidth, Mode=TwoWay}"
         Title="{Binding GartenName}"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
 
