@@ -75,7 +75,7 @@
         </ItemsControl>
 
         <TextBlock HorizontalAlignment="Left"
-                   Text="{Binding LastPosition}"
+                   Text="{Binding LeftButtonDownPosition}"
                    VerticalAlignment="Bottom"
                    Foreground="Blue"
                    FontFamily="Segoe UI Light"
@@ -83,7 +83,7 @@
                    IsHitTestVisible="False" />
 
         <TextBlock HorizontalAlignment="Right"
-                   Text="{Binding LastPositionRight}"
+                   Text="{Binding LeftButtonUpPosition}"
                    VerticalAlignment="Bottom"
                    Foreground="Blue"
                    FontFamily="Segoe UI Light"

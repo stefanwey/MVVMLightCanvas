@@ -13,7 +13,7 @@ namespace BusinessLogic.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+        #endregion INotifyPropertyChanged Members
 
         void OnPropertyChanged(string propertyName)
         {

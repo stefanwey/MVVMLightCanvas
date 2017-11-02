@@ -23,7 +23,7 @@ namespace BusinessLogic.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        #region private Fields
+        #region Fields
 
         // The part of the rectangle the mouse is over.
         private enum HitType
@@ -33,8 +33,8 @@ namespace BusinessLogic.ViewModel
 
         private const string ShowCursorPropertyName = "ShowCursor";
 
-        private string _lastPosition = "Click somewhere";
-        private string _lastPositionRight = "Click somewhere";
+        private string _leftButtonDownPosition = "Click somewhere";
+        private string _leftButtonUpPosition = "Click somewhere";
         private string _lastPositionMouseMove = "Click somewhere";
         private Cursor _showCursor;
         private RelayCommand<Point> _mouseLeftButtonDownCommand;
@@ -50,32 +50,32 @@ namespace BusinessLogic.ViewModel
         // The part of the rectangle under the mouse.
         HitType _mouseHitType = HitType.None;
 
-        #endregion private Fields
+        #endregion Fields
 
-        #region public Properties
+        #region Properties
 
         public ObservableCollection<BeetliData> TheBeetlis { get; private set; }
 
-        public string LastPosition
+        public string LeftButtonDownPosition
         {
             get
             {
-                return _lastPosition;
+                return _leftButtonDownPosition;
             }
             set
             {
-                Set(() => LastPosition, ref _lastPosition, value);
+                Set(() => LeftButtonDownPosition, ref _leftButtonDownPosition, value);
             }
         }
-        public string LastPositionRight
+        public string LeftButtonUpPosition
         {
             get
             {
-                return _lastPositionRight;
+                return _leftButtonUpPosition;
             }
             set
             {
-                Set(() => LastPositionRight, ref _lastPositionRight, value);
+                Set(() => LeftButtonUpPosition, ref _leftButtonUpPosition, value);
             }
         }
         public string LastPositionMouseMove
@@ -107,7 +107,7 @@ namespace BusinessLogic.ViewModel
             }
         }
 
-        #endregion public Properties
+        #endregion Properties
 
         #region Constructor
 
@@ -125,7 +125,7 @@ namespace BusinessLogic.ViewModel
 
         #endregion Constructor
 
-        #region public Methods
+        #region Public Methods
 
         public RelayCommand<Point> MouseLeftButtonDownCommand
         {
@@ -134,7 +134,7 @@ namespace BusinessLogic.ViewModel
                 return _mouseLeftButtonDownCommand ?? (_mouseLeftButtonDownCommand =
                     new RelayCommand<Point>(point =>
                     {
-                        LastPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
+                        LeftButtonDownPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
                         _mouseHitType = SetHitType(TheBeetlis, point);
                         SetMouseCursor();
@@ -152,7 +152,7 @@ namespace BusinessLogic.ViewModel
                 return _mouseLeftButtonUpCommand ?? (_mouseLeftButtonUpCommand =
                     new RelayCommand<Point>(point =>
                     {
-                        LastPositionRight = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
+                        LeftButtonUpPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
                         _dragInProgress = false;
                     }));
@@ -253,9 +253,9 @@ namespace BusinessLogic.ViewModel
             }
         }
 
-        #endregion public Methods
+        #endregion Public Methods
 
-        #region private Methods
+        #region Private Methods
 
         // Return a HitType value to indicate what is at the point.
         private HitType SetHitType(ObservableCollection<BeetliData> beetlies, Point point)
@@ -326,6 +326,6 @@ namespace BusinessLogic.ViewModel
             }
         }
  
-        #endregion private Methods
+        #endregion Private Methods
     }
 }
