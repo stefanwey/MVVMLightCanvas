@@ -32,6 +32,9 @@ namespace BusinessLogic.ViewModel
         };
 
         private const string ShowCursorPropertyName = "ShowCursor";
+        private const string GartenNamePropertyName = "GartenName";
+        private const string GartenWidthPropertyName = "GartenName";
+        private const string GartenHeightPropertyName = "GartenName";
 
         private string _leftButtonDownPosition = "Click somewhere";
         private string _leftButtonUpPosition = "Click somewhere";
@@ -54,7 +57,43 @@ namespace BusinessLogic.ViewModel
 
         #region Properties
 
-        public ObservableCollection<BeetliData> TheBeetlis { get; private set; }
+        public GartenData TheGarten { get; private set; }
+        public string GartenName
+        {
+            get
+            {
+                return TheGarten.GartenName;
+            }
+            set
+            {
+                TheGarten.GartenName = value;
+                RaisePropertyChanged(ShowCursorPropertyName);
+            }
+        }
+        public double GartenWidth
+        {
+            get
+            {
+                return TheGarten.GartenWidth;
+            }
+            set
+            {
+                TheGarten.GartenWidth = value;
+                RaisePropertyChanged(GartenWidthPropertyName);
+            }
+        }
+        public double GartenHeight
+        {
+            get
+            {
+                return TheGarten.GartenHeight;
+            }
+            set
+            {
+                TheGarten.GartenHeight = value;
+                RaisePropertyChanged(GartenHeightPropertyName);
+            }
+        }
 
         public string LeftButtonDownPosition
         {
@@ -116,11 +155,7 @@ namespace BusinessLogic.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            TheBeetlis = new ObservableCollection<BeetliData>();
-
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
+            TheGarten = new GartenData() { GartenWidth = 250, GartenHeight = 500, GartenName = "Marcel's Garte" };
         }
 
         #endregion Constructor
@@ -136,12 +171,12 @@ namespace BusinessLogic.ViewModel
                     {
                         LeftButtonDownPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        _mouseHitType = SetHitType(TheBeetlis, point);
-                        SetMouseCursor();
-                        if (_mouseHitType == HitType.None) return;
+                        //_mouseHitType = SetHitType(TheBeetlis, point);
+                        //SetMouseCursor();
+                        //if (_mouseHitType == HitType.None) return;
 
-                        _lastPoint = point;
-                        _dragInProgress = true;
+                        //_lastPoint = point;
+                        //_dragInProgress = true;
                     }));
             }
         }
@@ -154,7 +189,7 @@ namespace BusinessLogic.ViewModel
                     {
                         LeftButtonUpPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        _dragInProgress = false;
+                        //_dragInProgress = false;
                     }));
             }
         }
@@ -167,87 +202,87 @@ namespace BusinessLogic.ViewModel
                     {
                         LastPositionMouseMove = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        if (_dragInProgress == false)
-                        {
-                            _mouseHitType = SetHitType(TheBeetlis, point);
-                            SetMouseCursor();
-                        }
-                        else
-                        {
-                            // See how much the mouse has moved.
-                            Point position = point;
-                            double offset_x = point.X - _lastPoint.X;
-                            double offset_y = point.Y - _lastPoint.Y;
+                        //if (_dragInProgress == false)
+                        //{
+                        //    _mouseHitType = SetHitType(TheBeetlis, point);
+                        //    SetMouseCursor();
+                        //}
+                        //else
+                        //{
+                        //    // See how much the mouse has moved.
+                        //    Point position = point;
+                        //    double offset_x = point.X - _lastPoint.X;
+                        //    double offset_y = point.Y - _lastPoint.Y;
 
-                            foreach (var beetli in TheBeetlis)
-                            {
-                                // Check if we have a beetli at the mouse position
-                                if (new Rect(beetli.BeetliLeft, beetli.BeetliTop, beetli.BeetliWidth, beetli.BeetliHeight).Contains(point))
-                                {
-                                    // Get the rectangle's current position.
-                                    double new_x = beetli.BeetliLeft;
-                                    double new_y = beetli.BeetliTop;
-                                    double new_width = beetli.BeetliWidth;
-                                    double new_height = beetli.BeetliHeight;
+                        //    foreach (var beetli in TheBeetlis)
+                        //    {
+                        //        // Check if we have a beetli at the mouse position
+                        //        if (new Rect(beetli.BeetliLeft, beetli.BeetliTop, beetli.BeetliWidth, beetli.BeetliHeight).Contains(point))
+                        //        {
+                        //            // Get the rectangle's current position.
+                        //            double new_x = beetli.BeetliLeft;
+                        //            double new_y = beetli.BeetliTop;
+                        //            double new_width = beetli.BeetliWidth;
+                        //            double new_height = beetli.BeetliHeight;
 
-                                    // Update the rectangle.
-                                    switch (_mouseHitType)
-                                    {
-                                        case HitType.Body:
-                                            new_x += offset_x;
-                                            new_y += offset_y;
-                                            break;
-                                        case HitType.UL:
-                                            new_x += offset_x;
-                                            new_y += offset_y;
-                                            new_width -= offset_x;
-                                            new_height -= offset_y;
-                                            break;
-                                        case HitType.UR:
-                                            new_y += offset_y;
-                                            new_width += offset_x;
-                                            new_height -= offset_y;
-                                            break;
-                                        case HitType.LR:
-                                            new_width += offset_x;
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.LL:
-                                            new_x += offset_x;
-                                            new_width -= offset_x;
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.L:
-                                            new_x += offset_x;
-                                            new_width -= offset_x;
-                                            break;
-                                        case HitType.R:
-                                            new_width += offset_x;
-                                            break;
-                                        case HitType.B:
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.T:
-                                            new_y += offset_y;
-                                            new_height -= offset_y;
-                                            break;
-                                    }
+                        //            // Update the rectangle.
+                        //            switch (_mouseHitType)
+                        //            {
+                        //                case HitType.Body:
+                        //                    new_x += offset_x;
+                        //                    new_y += offset_y;
+                        //                    break;
+                        //                case HitType.UL:
+                        //                    new_x += offset_x;
+                        //                    new_y += offset_y;
+                        //                    new_width -= offset_x;
+                        //                    new_height -= offset_y;
+                        //                    break;
+                        //                case HitType.UR:
+                        //                    new_y += offset_y;
+                        //                    new_width += offset_x;
+                        //                    new_height -= offset_y;
+                        //                    break;
+                        //                case HitType.LR:
+                        //                    new_width += offset_x;
+                        //                    new_height += offset_y;
+                        //                    break;
+                        //                case HitType.LL:
+                        //                    new_x += offset_x;
+                        //                    new_width -= offset_x;
+                        //                    new_height += offset_y;
+                        //                    break;
+                        //                case HitType.L:
+                        //                    new_x += offset_x;
+                        //                    new_width -= offset_x;
+                        //                    break;
+                        //                case HitType.R:
+                        //                    new_width += offset_x;
+                        //                    break;
+                        //                case HitType.B:
+                        //                    new_height += offset_y;
+                        //                    break;
+                        //                case HitType.T:
+                        //                    new_y += offset_y;
+                        //                    new_height -= offset_y;
+                        //                    break;
+                        //            }
 
-                                    // Don't use negative width or height.
-                                    if ((new_width > 0) && (new_height > 0))
-                                    {
-                                        // Update the rectangle.
-                                        beetli.BeetliLeft = new_x;
-                                        beetli.BeetliTop = new_y;
-                                        beetli.BeetliWidth = new_width;
-                                        beetli.BeetliHeight = new_height;
+                        //            // Don't use negative width or height.
+                        //            if ((new_width > 0) && (new_height > 0))
+                        //            {
+                        //                // Update the rectangle.
+                        //                beetli.BeetliLeft = new_x;
+                        //                beetli.BeetliTop = new_y;
+                        //                beetli.BeetliWidth = new_width;
+                        //                beetli.BeetliHeight = new_height;
 
-                                        // Save the mouse's new location.
-                                        _lastPoint = point;
-                                    }
-                                }
-                            }
-                        }
+                        //                // Save the mouse's new location.
+                        //                _lastPoint = point;
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
                     }));
             }
