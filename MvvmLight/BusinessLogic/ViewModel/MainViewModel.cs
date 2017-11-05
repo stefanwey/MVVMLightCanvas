@@ -1,9 +1,6 @@
 using GalaSoft.MvvmLight;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -25,33 +22,20 @@ namespace BusinessLogic.ViewModel
     {
         #region Fields
 
-        // The part of the rectangle the mouse is over.
-        private enum HitType
-        {
-            None, Body, UL, UR, LR, LL, L, R, T, B
-        };
+        private const string _ShowCursorPropertyName = "ShowCursor";
+        private const string _GartenNamePropertyName = "GartenName";
+        private const string _GartenWidthPropertyName = "GartenName";
+        private const string _GartenHeightPropertyName = "GartenName";
 
-        private const string ShowCursorPropertyName = "ShowCursor";
-        private const string GartenNamePropertyName = "GartenName";
-        private const string GartenWidthPropertyName = "GartenName";
-        private const string GartenHeightPropertyName = "GartenName";
+        private string _LeftButtonDownPosition = "Click somewhere";
+        private string _LeftButtonUpPosition = "Click somewhere";
+        private string _LastPositionMouseMove = "Click somewhere";
 
-        private string _leftButtonDownPosition = "Click somewhere";
-        private string _leftButtonUpPosition = "Click somewhere";
-        private string _lastPositionMouseMove = "Click somewhere";
-        private Cursor _showCursor;
-        private RelayCommand<Point> _mouseLeftButtonDownCommand;
-        private RelayCommand<Point> _mouseLeftButtonUpCommand;
-        private RelayCommand<Point> _mouseMoveCommand;
+        private Cursor _ShowCursor;
 
-        // True if a drag is in progress.
-        private bool _dragInProgress = false;
-
-        // The drag's last point.
-        private Point _lastPoint;
-
-        // The part of the rectangle under the mouse.
-        HitType _mouseHitType = HitType.None;
+        private RelayCommand<Point> _MouseLeftButtonDownCommand;
+        private RelayCommand<Point> _MouseLeftButtonUpCommand;
+        private RelayCommand<Point> _MouseMoveCommand;
 
         #endregion Fields
 
@@ -76,7 +60,7 @@ namespace BusinessLogic.ViewModel
             set
             {
                 TheGarten.GartenName = value;
-                RaisePropertyChanged(ShowCursorPropertyName);
+                RaisePropertyChanged(_ShowCursorPropertyName);
             }
         }
         public double GartenWidth
@@ -88,7 +72,7 @@ namespace BusinessLogic.ViewModel
             set
             {
                 TheGarten.GartenWidth = value;
-                RaisePropertyChanged(GartenWidthPropertyName);
+                RaisePropertyChanged(_GartenWidthPropertyName);
             }
         }
         public double GartenHeight
@@ -100,7 +84,7 @@ namespace BusinessLogic.ViewModel
             set
             {
                 TheGarten.GartenHeight = value;
-                RaisePropertyChanged(GartenHeightPropertyName);
+                RaisePropertyChanged(_GartenHeightPropertyName);
             }
         }
 
@@ -108,50 +92,53 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _leftButtonDownPosition;
+                return _LeftButtonDownPosition;
             }
             set
             {
-                Set(() => LeftButtonDownPosition, ref _leftButtonDownPosition, value);
+                Set(() => LeftButtonDownPosition, ref _LeftButtonDownPosition, value);
             }
         }
         public string LeftButtonUpPosition
         {
             get
             {
-                return _leftButtonUpPosition;
+                return _LeftButtonUpPosition;
             }
             set
             {
-                Set(() => LeftButtonUpPosition, ref _leftButtonUpPosition, value);
+                Set(() => LeftButtonUpPosition, ref _LeftButtonUpPosition, value);
             }
         }
         public string LastPositionMouseMove
         {
             get
             {
-                return _lastPositionMouseMove;
+                return _LastPositionMouseMove;
             }
             set
             {
-                Set(() => LastPositionMouseMove, ref _lastPositionMouseMove, value);
+                Set(() => LastPositionMouseMove, ref _LastPositionMouseMove, value);
             }
         }
+
+        public HitType MouseHitType {get; set;}
+
         public Cursor ShowCursor
         {
             get
             {
-                return _showCursor;
+                return _ShowCursor;
             }
             set
             {
-                if (_showCursor == value)
+                if (_ShowCursor == value)
                 {
                     return;
                 }
 
-                _showCursor = value;
-                RaisePropertyChanged(ShowCursorPropertyName);
+                _ShowCursor = value;
+                RaisePropertyChanged(_ShowCursorPropertyName);
             }
         }
 
@@ -175,17 +162,13 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _mouseLeftButtonDownCommand ?? (_mouseLeftButtonDownCommand =
+                return _MouseLeftButtonDownCommand ?? (_MouseLeftButtonDownCommand =
                     new RelayCommand<Point>(point =>
                     {
                         LeftButtonDownPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        _mouseHitType = SetHitType(TheBeetlis, point);
+                        MouseHitType = TheGarten.StartDrag(point);
                         SetMouseCursor();
-                        if (_mouseHitType == HitType.None) return;
-
-                        _lastPoint = point;
-                        _dragInProgress = true;
                     }));
             }
         }
@@ -193,12 +176,12 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _mouseLeftButtonUpCommand ?? (_mouseLeftButtonUpCommand =
+                return _MouseLeftButtonUpCommand ?? (_MouseLeftButtonUpCommand =
                     new RelayCommand<Point>(point =>
                     {
                         LeftButtonUpPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        _dragInProgress = false;
+                        TheGarten.StopDrag(point);
                     }));
             }
         }
@@ -206,93 +189,13 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _mouseMoveCommand ?? (_mouseMoveCommand =
+                return _MouseMoveCommand ?? (_MouseMoveCommand =
                     new RelayCommand<Point>(point =>
                     {
                         LastPositionMouseMove = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        if (_dragInProgress == false)
-                        {
-                            _mouseHitType = SetHitType(TheBeetlis, point);
-                            SetMouseCursor();
-                        }
-                        else
-                        {
-                            // See how much the mouse has moved.
-                            Point position = point;
-                            double offset_x = point.X - _lastPoint.X;
-                            double offset_y = point.Y - _lastPoint.Y;
-
-                            foreach (var beetli in TheBeetlis)
-                            {
-                                // Check if we have a beetli at the mouse position
-                                if (new Rect(beetli.BeetliLeft, beetli.BeetliTop, beetli.BeetliWidth, beetli.BeetliHeight).Contains(point))
-                                {
-                                    // Get the rectangle's current position.
-                                    double new_x = beetli.BeetliLeft;
-                                    double new_y = beetli.BeetliTop;
-                                    double new_width = beetli.BeetliWidth;
-                                    double new_height = beetli.BeetliHeight;
-
-                                    // Update the rectangle.
-                                    switch (_mouseHitType)
-                                    {
-                                        case HitType.Body:
-                                            new_x += offset_x;
-                                            new_y += offset_y;
-                                            break;
-                                        case HitType.UL:
-                                            new_x += offset_x;
-                                            new_y += offset_y;
-                                            new_width -= offset_x;
-                                            new_height -= offset_y;
-                                            break;
-                                        case HitType.UR:
-                                            new_y += offset_y;
-                                            new_width += offset_x;
-                                            new_height -= offset_y;
-                                            break;
-                                        case HitType.LR:
-                                            new_width += offset_x;
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.LL:
-                                            new_x += offset_x;
-                                            new_width -= offset_x;
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.L:
-                                            new_x += offset_x;
-                                            new_width -= offset_x;
-                                            break;
-                                        case HitType.R:
-                                            new_width += offset_x;
-                                            break;
-                                        case HitType.B:
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.T:
-                                            new_y += offset_y;
-                                            new_height -= offset_y;
-                                            break;
-                                    }
-
-                                    // Don't use negative width or height.
-                                    if ((new_width > 0) && (new_height > 0))
-                                    {
-                                        // Update the rectangle.
-                                        beetli.BeetliLeft = new_x;
-                                        beetli.BeetliTop = new_y;
-                                        beetli.BeetliWidth = new_width;
-                                        beetli.BeetliHeight = new_height;
-
-                                        // Save the mouse's new location.
-                                        _lastPoint = point;
-                                    }
-                                }
-                            }
-                        }
-
+                        MouseHitType = TheGarten.MouseMove(point);
+                        SetMouseCursor();
                     }));
             }
         }
@@ -301,49 +204,11 @@ namespace BusinessLogic.ViewModel
 
         #region Private Methods
 
-        // Return a HitType value to indicate what is at the point.
-        private HitType SetHitType(ObservableCollection<BeetliData> beetlies, Point point)
-        {
-            foreach (var beetli in beetlies)
-            {
-                double left = beetli.BeetliLeft;
-                double top = beetli.BeetliTop;
-                double right = left + beetli.BeetliWidth;
-                double bottom = top + beetli.BeetliHeight;
-                if (point.X < left) continue;
-                if (point.X > right) continue;
-                if (point.Y < top) continue;
-                if (point.Y > bottom) continue;
-
-                const double GAP = 10;
-                if (point.X - left < GAP)
-                {
-                    // Left edge.
-                    if (point.Y - top < GAP) return HitType.UL;
-                    if (bottom - point.Y < GAP) return HitType.LL;
-                    return HitType.L;
-                }
-                if (right - point.X < GAP)
-                {
-                    // Right edge.
-                    if (point.Y - top < GAP) return HitType.UR;
-                    if (bottom - point.Y < GAP) return HitType.LR;
-                    return HitType.R;
-                }
-                if (point.Y - top < GAP) return HitType.T;
-                if (bottom - point.Y < GAP) return HitType.B;
-
-                return HitType.Body;
-            }
-
-            return HitType.None;
-        }
-
         // Set a mouse cursor appropriate for the current hit type.
         private void SetMouseCursor()
         {
             // See what cursor we should display.
-            switch (_mouseHitType)
+            switch (MouseHitType)
             {
                 case HitType.None:
                     ShowCursor = Cursors.Arrow;
