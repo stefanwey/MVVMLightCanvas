@@ -21,10 +21,16 @@ namespace BusinessLogic.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #region Fields
+
         private double _Left;
         private double _Top;
         private double _Width;
         private double _Height;
+
+        #endregion Fields
+
+        #region Properties
 
         public double BeetliLeft
         {
@@ -81,6 +87,8 @@ namespace BusinessLogic.ViewModel
                 OnPropertyChanged("BeetliHeight");
             }
         }
+
+        #endregion Properties
 
     }
 }
