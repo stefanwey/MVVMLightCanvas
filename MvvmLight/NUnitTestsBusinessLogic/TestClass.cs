@@ -1,11 +1,15 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using BusinessLogic.ViewModel;
+
+
 
 namespace NUnitTestsBusinessLogic
 {
@@ -22,10 +26,12 @@ namespace NUnitTestsBusinessLogic
             beetli.BeetliTop = 30;
             beetli.BeetliHeight = 20;
 
-            Assert.AreEqual(true, beetli.IsPointInside(11, 31));
-            Assert.AreEqual(true, beetli.IsPointInside(19, 31));
-            Assert.AreEqual(true, beetli.IsPointInside(11, 49));
-            Assert.AreEqual(true, beetli.IsPointInside(19, 49));
+            
+
+            Assert.AreEqual(true, beetli.Contains(new Point(11, 31)));
+            Assert.AreEqual(true, beetli.Contains(new Point(19, 31)));
+            Assert.AreEqual(true, beetli.Contains(new Point(11, 49)));
+            Assert.AreEqual(true, beetli.Contains(new Point(19, 49)));
         }
 
 
@@ -39,10 +45,10 @@ namespace NUnitTestsBusinessLogic
             beetli.BeetliTop = 30;
             beetli.BeetliHeight = 20;
             
-            Assert.AreEqual(false, beetli.IsPointInside(10, 30));
-            Assert.AreEqual(false, beetli.IsPointInside(20, 30));
-            Assert.AreEqual(false, beetli.IsPointInside(10, 50));
-            Assert.AreEqual(false, beetli.IsPointInside(20, 50));
+            Assert.AreEqual(false, beetli.Contains(new Point(10, 30)));
+            Assert.AreEqual(false, beetli.Contains(new Point(20, 30)));
+            Assert.AreEqual(false, beetli.Contains(new Point(10, 50)));
+            Assert.AreEqual(false, beetli.Contains(new Point(20, 50)));
         }
 
 

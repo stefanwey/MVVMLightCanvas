@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -23,13 +24,7 @@ namespace BusinessLogic.ViewModel
 
         #region Fields
 
-        private double _Left;
-        private double _Top;
-        private double _Width;
-        private double _Height;
-
-        private double _Right;
-        private double _Bottom;
+        private Rect _Rect = new Rect();
 
         #endregion Fields
 
@@ -39,12 +34,11 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _Left;
+                return _Rect.Left;
             }
             set
             {
-                _Left = value;
-                _Right = value + _Width;
+                _Rect.X = value;
                 OnPropertyChanged("BeetliLeft");
             }
         }
@@ -53,13 +47,12 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _Top;
+                return _Rect.Top;
             }
 
             set
             {
-                _Top = value;
-                _Bottom = value + _Height;
+                _Rect.Y = value;
                 OnPropertyChanged("BeetliTop");
             }
         }
@@ -68,13 +61,12 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _Width;
+                return _Rect.Width;
             }
 
             set
             {
-                _Width = value;
-                _Right = _Left + value;
+                _Rect.Width = value;
                 OnPropertyChanged("BeetliWidth");
             }
         }
@@ -83,22 +75,21 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _Height;
+                return _Rect.Height;
             }
 
             set
             {
-                _Height = value;
-                _Bottom = _Top + value;
+                _Rect.Height = value;
                 OnPropertyChanged("BeetliHeight");
             }
         }
 
         #endregion Properties
 
-        public bool IsPointInside(double x, double y)
+        public bool Contains(Point point)
         {
-            if( _Left < x && x < (_Left + _Width) && _Top < y && y < ( _Top + _Height) )
+            if( _Rect.Contains(point) )
             {
                 return true;
             }
@@ -110,14 +101,9 @@ namespace BusinessLogic.ViewModel
 
         public bool IsOverlapping(double x1, double y1, double x2, double y2)
         {
-            double possibleX1, possibleY1, possibleX2, possibleY2;
+            Rect rect = new Rect(new Point(x1, y1), new Point(x2, y2));
 
-            possibleX1 = Math.Max(_Left, x1);
-            possibleY1 = Math.Max(_Top, y1);
-            possibleX2 = Math.Min(_Right, x2);
-            possibleY2 = Math.Min(_Bottom, y2);
-
-            if( possibleX2 > possibleX1 && possibleY2 > possibleY1)
+            if(_Rect.IntersectsWith(rect) )
             {
                 return true;
             }
