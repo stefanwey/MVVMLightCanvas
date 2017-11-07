@@ -61,6 +61,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\BeetliData.cs" />
+    <Compile Include="ViewModel\Enums.cs" />
+    <Compile Include="ViewModel\GartenData.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
   </ItemGroup>

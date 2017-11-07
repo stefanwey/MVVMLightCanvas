@@ -7,7 +7,9 @@
         xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
         xmlns:helpers="clr-namespace:CanvasGui.Helpers"
         mc:Ignorable="d"
-        Height="350" Width="525"
+        Height="{Binding GartenHeight, Mode=TwoWay}"
+        Width="{Binding GartenWidth, Mode=TwoWay}"
+        Title="{Binding GartenName}"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
 
     <Window.Resources>
@@ -48,7 +50,8 @@
         </i:Interaction.Triggers>
 
         <ItemsControl ItemsSource="{Binding TheBeetlis}"
-                      Background="ForestGreen">
+                      Background="ForestGreen"
+                      Cursor="{Binding ShowCursor}">
 
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -74,7 +77,7 @@
         </ItemsControl>
 
         <TextBlock HorizontalAlignment="Left"
-                   Text="{Binding LastPosition}"
+                   Text="{Binding LeftButtonDownPosition}"
                    VerticalAlignment="Bottom"
                    Foreground="Blue"
                    FontFamily="Segoe UI Light"
@@ -82,7 +85,7 @@
                    IsHitTestVisible="False" />
 
         <TextBlock HorizontalAlignment="Right"
-                   Text="{Binding LastPositionRight}"
+                   Text="{Binding LeftButtonUpPosition}"
                    VerticalAlignment="Bottom"
                    Foreground="Blue"
                    FontFamily="Segoe UI Light"

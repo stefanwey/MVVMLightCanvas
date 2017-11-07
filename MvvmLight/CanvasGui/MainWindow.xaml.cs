@@ -21,8 +21,6 @@ namespace CanvasGui
     /// </summary>
     public partial class MainWindow : Window
     {
-        //MainViewModel _beetliList = null;
-
         public MainWindow()
         {
             InitializeComponent();

@@ -1,10 +1,8 @@
 using GalaSoft.MvvmLight;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
+using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 
 namespace BusinessLogic.ViewModel
 {
@@ -22,93 +20,159 @@ namespace BusinessLogic.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
-        // The part of the rectangle the mouse is over.
-        private enum HitType
-        {
-            None, Body, UL, UR, LR, LL, L, R, T, B
-        };
+        #region Fields
 
-        public const string LastPositionPropertyName = "LastPosition";
+        private const string _ShowCursorPropertyName = "ShowCursor";
+        private const string _GartenNamePropertyName = "GartenName";
+        private const string _GartenWidthPropertyName = "GartenName";
+        private const string _GartenHeightPropertyName = "GartenName";
 
-        private string _lastPosition = "Click somewhere";
-        private string _lastPositionRight = "Click somewhere";
-        private string _lastPositionMouseMove = "Click somewhere";
-        private RelayCommand<Point> _mouseLeftButtonDownCommand;
-        private RelayCommand<Point> _mouseLeftButtonUpCommand;
-        private RelayCommand<Point> _mouseMoveCommand;
+        private string _LeftButtonDownPosition = "Click somewhere";
+        private string _LeftButtonUpPosition = "Click somewhere";
+        private string _LastPositionMouseMove = "Click somewhere";
 
-        // True if a drag is in progress.
-        private bool _dragInProgress = false;
+        private Cursor _ShowCursor;
 
-        // The drag's last point.
-        private Point _lastPoint;
+        private RelayCommand<Point> _MouseLeftButtonDownCommand;
+        private RelayCommand<Point> _MouseLeftButtonUpCommand;
+        private RelayCommand<Point> _MouseMoveCommand;
 
-        // The part of the rectangle under the mouse.
-        HitType _mouseHitType = HitType.None;
+        #endregion Fields
 
-        public ObservableCollection<BeetliData> TheBeetlis { get; private set; }
+        #region Properties
 
-        /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
-        /// </summary>
-        public MainViewModel()
-        {
-            TheBeetlis = new ObservableCollection<BeetliData>();
+        public GartenData TheGarten { get; private set; }
 
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
-            TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
-        }
-
-        public string LastPosition
+        public ObservableCollection<BeetliData> TheBeetlis
         {
             get
             {
-                return _lastPosition;
-            }
-            set
-            {
-                Set(() => LastPosition, ref _lastPosition, value);
+                return TheGarten.TheBeetlis;
             }
         }
-        public string LastPositionRight
+
+        public string GartenName
         {
             get
             {
-                return _lastPositionRight;
+                return TheGarten.GartenName;
             }
             set
             {
-                Set(() => LastPositionRight, ref _lastPositionRight, value);
+                TheGarten.GartenName = value;
+                RaisePropertyChanged(_ShowCursorPropertyName);
+            }
+        }
+        public double GartenWidth
+        {
+            get
+            {
+                return TheGarten.GartenWidth;
+            }
+            set
+            {
+                TheGarten.GartenWidth = value;
+                RaisePropertyChanged(_GartenWidthPropertyName);
+            }
+        }
+        public double GartenHeight
+        {
+            get
+            {
+                return TheGarten.GartenHeight;
+            }
+            set
+            {
+                TheGarten.GartenHeight = value;
+                RaisePropertyChanged(_GartenHeightPropertyName);
+            }
+        }
+
+        public string LeftButtonDownPosition
+        {
+            get
+            {
+                return _LeftButtonDownPosition;
+            }
+            set
+            {
+                Set(() => LeftButtonDownPosition, ref _LeftButtonDownPosition, value);
+            }
+        }
+        public string LeftButtonUpPosition
+        {
+            get
+            {
+                return _LeftButtonUpPosition;
+            }
+            set
+            {
+                Set(() => LeftButtonUpPosition, ref _LeftButtonUpPosition, value);
             }
         }
         public string LastPositionMouseMove
         {
             get
             {
-                return _lastPositionMouseMove;
+                return _LastPositionMouseMove;
             }
             set
             {
-                Set(() => LastPositionMouseMove, ref _lastPositionMouseMove, value);
+                Set(() => LastPositionMouseMove, ref _LastPositionMouseMove, value);
             }
         }
+
+        public HitType MouseHitType {get; set;}
+
+        public Cursor ShowCursor
+        {
+            get
+            {
+                return _ShowCursor;
+            }
+            set
+            {
+                if (_ShowCursor == value)
+                {
+                    return;
+                }
+
+                _ShowCursor = value;
+                RaisePropertyChanged(_ShowCursorPropertyName);
+            }
+        }
+
+        #endregion Properties
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the MainViewModel class.
+        /// </summary>
+        public MainViewModel()
+        {
+            TheGarten = new GartenData() { GartenWidth = 500, GartenHeight = 500, GartenName = "Marcel's Garte" };
+
+            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
+            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
+            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
+        }
+
+        #endregion Constructor
+
+        #region Public Methods
 
         public RelayCommand<Point> MouseLeftButtonDownCommand
         {
             get
             {
-                return _mouseLeftButtonDownCommand ?? (_mouseLeftButtonDownCommand =
+                return _MouseLeftButtonDownCommand ?? (_MouseLeftButtonDownCommand =
                     new RelayCommand<Point>(point =>
                     {
-                        LastPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
+                        LeftButtonDownPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        _mouseHitType = SetHitType(TheBeetlis, point);
+                        MouseHitType = TheGarten.StartDrag(point);
                         SetMouseCursor();
-                        if (_mouseHitType == HitType.None) return;
-
-                        _lastPoint = point;
-                        _dragInProgress = true;
                     }));
             }
         }
@@ -116,12 +180,12 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _mouseLeftButtonUpCommand ?? (_mouseLeftButtonUpCommand = 
+                return _MouseLeftButtonUpCommand ?? (_MouseLeftButtonUpCommand =
                     new RelayCommand<Point>(point =>
                     {
-                        LastPositionRight = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
+                        LeftButtonUpPosition = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        _dragInProgress = false;
+                        TheGarten.StopDrag(point);
                     }));
             }
         }
@@ -129,169 +193,52 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _mouseMoveCommand ?? (_mouseMoveCommand =
+                return _MouseMoveCommand ?? (_MouseMoveCommand =
                     new RelayCommand<Point>(point =>
                     {
                         LastPositionMouseMove = string.Format("{0:N1}, {1:N1}", point.X, point.Y);
 
-                        if (_dragInProgress == false)
-                        {
-                            _mouseHitType = SetHitType(TheBeetlis, point);
-                            SetMouseCursor();
-                        }
-                        else
-                        {
-                            // See how much the mouse has moved.
-                            Point position = point;
-                            double offset_x = point.X - _lastPoint.X;
-                            double offset_y = point.Y - _lastPoint.Y;
-
-                            foreach (var beetli in TheBeetlis)
-                            {
-                                // Check if we have a beetli at the mouse position
-                                if (new Rect(beetli.BeetliLeft, beetli.BeetliTop, beetli.BeetliWidth, beetli.BeetliHeight).Contains(point))
-                                {
-                                    // Get the rectangle's current position.
-                                    double new_x = beetli.BeetliLeft;
-                                    double new_y = beetli.BeetliTop;
-                                    double new_width = beetli.BeetliWidth;
-                                    double new_height = beetli.BeetliHeight;
-
-                                    // Update the rectangle.
-                                    switch (_mouseHitType)
-                                    {
-                                        case HitType.Body:
-                                            new_x += offset_x;
-                                            new_y += offset_y;
-                                            break;
-                                        case HitType.UL:
-                                            new_x += offset_x;
-                                            new_y += offset_y;
-                                            new_width -= offset_x;
-                                            new_height -= offset_y;
-                                            break;
-                                        case HitType.UR:
-                                            new_y += offset_y;
-                                            new_width += offset_x;
-                                            new_height -= offset_y;
-                                            break;
-                                        case HitType.LR:
-                                            new_width += offset_x;
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.LL:
-                                            new_x += offset_x;
-                                            new_width -= offset_x;
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.L:
-                                            new_x += offset_x;
-                                            new_width -= offset_x;
-                                            break;
-                                        case HitType.R:
-                                            new_width += offset_x;
-                                            break;
-                                        case HitType.B:
-                                            new_height += offset_y;
-                                            break;
-                                        case HitType.T:
-                                            new_y += offset_y;
-                                            new_height -= offset_y;
-                                            break;
-                                    }
-
-                                    // Don't use negative width or height.
-                                    if ((new_width > 0) && (new_height > 0))
-                                    {
-                                        // Update the rectangle.
-                                        beetli.BeetliLeft = new_x;
-                                        beetli.BeetliTop = new_y;
-                                        beetli.BeetliWidth = new_width;
-                                        beetli.BeetliHeight = new_height;
-
-                                        // Save the mouse's new location.
-                                        _lastPoint = point;
-                                    }
-                                }
-                            }
-                        }
-
+                        MouseHitType = TheGarten.MouseMove(point);
+                        SetMouseCursor();
                     }));
             }
         }
 
-        // Return a HitType value to indicate what is at the point.
-        private HitType SetHitType(ObservableCollection<BeetliData> beetlies, Point point)
-        {
-            foreach (var beetli in beetlies)
-            {
-                double left = beetli.BeetliLeft;
-                double top = beetli.BeetliTop;
-                double right = left + beetli.BeetliWidth;
-                double bottom = top + beetli.BeetliHeight;
-                if (point.X < left) continue;
-                if (point.X > right) continue;
-                if (point.Y < top) continue;
-                if (point.Y > bottom) continue;
+        #endregion Public Methods
 
-                const double GAP = 10;
-                if (point.X - left < GAP)
-                {
-                    // Left edge.
-                    if (point.Y - top < GAP) return HitType.UL;
-                    if (bottom - point.Y < GAP) return HitType.LL;
-                    return HitType.L;
-                }
-                if (right - point.X < GAP)
-                {
-                    // Right edge.
-                    if (point.Y - top < GAP) return HitType.UR;
-                    if (bottom - point.Y < GAP) return HitType.LR;
-                    return HitType.R;
-                }
-                if (point.Y - top < GAP) return HitType.T;
-                if (bottom - point.Y < GAP) return HitType.B;
-
-                return HitType.Body;
-            }
-
-            return HitType.None;
-        }
+        #region Private Methods
 
         // Set a mouse cursor appropriate for the current hit type.
         private void SetMouseCursor()
         {
-            //// See what cursor we should display.
-            //Cursor desired_cursor = Cursors.Arrow;
-            //switch (MouseHitType)
-            //{
-            //    case HitType.None:
-            //        desired_cursor = Cursors.Arrow;
-            //        break;
-            //    case HitType.Body:
-            //        desired_cursor = Cursors.ScrollAll;
-            //        break;
-            //    case HitType.UL:
-            //    case HitType.LR:
-            //        desired_cursor = Cursors.SizeNWSE;
-            //        break;
-            //    case HitType.LL:
-            //    case HitType.UR:
-            //        desired_cursor = Cursors.SizeNESW;
-            //        break;
-            //    case HitType.T:
-            //    case HitType.B:
-            //        desired_cursor = Cursors.SizeNS;
-            //        break;
-            //    case HitType.L:
-            //    case HitType.R:
-            //        desired_cursor = Cursors.SizeWE;
-            //        break;
-            //}
-
-            //// Display the desired cursor.
-            //if (Cursor != desired_cursor) Cursor = desired_cursor;
+            // See what cursor we should display.
+            switch (MouseHitType)
+            {
+                case HitType.None:
+                    ShowCursor = Cursors.Arrow;
+                    break;
+                case HitType.Body:
+                    ShowCursor = Cursors.ScrollAll;
+                    break;
+                case HitType.UL:
+                case HitType.LR:
+                    ShowCursor = Cursors.SizeNWSE;
+                    break;
+                case HitType.LL:
+                case HitType.UR:
+                    ShowCursor = Cursors.SizeNESW;
+                    break;
+                case HitType.T:
+                case HitType.B:
+                    ShowCursor = Cursors.SizeNS;
+                    break;
+                case HitType.L:
+                case HitType.R:
+                    ShowCursor = Cursors.SizeWE;
+                    break;
+            }
         }
-
+ 
+        #endregion Private Methods
     }
 }

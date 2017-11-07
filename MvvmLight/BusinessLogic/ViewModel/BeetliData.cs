@@ -13,7 +13,7 @@ namespace BusinessLogic.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+        #endregion INotifyPropertyChanged Members
 
         void OnPropertyChanged(string propertyName)
         {
@@ -21,19 +21,22 @@ namespace BusinessLogic.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private double _left;   // x1
-        private double _top;    // y1
-        private double _width;
-        private double _height;
+        #region Fields
 
-        private double _right;  // x2
-        private double _bottom; // y2
+        private double _Left;
+        private double _Top;
+        private double _Width;
+        private double _Height;
+
+        #endregion Fields
+
+        #region Properties
 
         public double BeetliLeft
         {
             get
             {
-                return _left;
+                return _Left;
             }
             set
             {
@@ -47,7 +50,7 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _top;
+                return _Top;
             }
 
             set
@@ -62,7 +65,7 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _width;
+                return _Width;
             }
 
             set
@@ -77,7 +80,7 @@ namespace BusinessLogic.ViewModel
         {
             get
             {
-                return _height;
+                return _Height;
             }
 
             set
