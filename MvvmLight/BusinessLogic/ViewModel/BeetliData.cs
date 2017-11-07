@@ -28,6 +28,9 @@ namespace BusinessLogic.ViewModel
         private double _Width;
         private double _Height;
 
+        private double _Right;
+        private double _Bottom;
+
         #endregion Fields
 
         #region Properties
@@ -40,8 +43,8 @@ namespace BusinessLogic.ViewModel
             }
             set
             {
-                _left = value;
-                _right = value + _width;
+                _Left = value;
+                _Right = value + _Width;
                 OnPropertyChanged("BeetliLeft");
             }
         }
@@ -55,8 +58,8 @@ namespace BusinessLogic.ViewModel
 
             set
             {
-                _top = value;
-                _bottom = value + _height;
+                _Top = value;
+                _Bottom = value + _Height;
                 OnPropertyChanged("BeetliTop");
             }
         }
@@ -70,8 +73,8 @@ namespace BusinessLogic.ViewModel
 
             set
             {
-                _width = value;
-                _right = _left + value;
+                _Width = value;
+                _Right = _Left + value;
                 OnPropertyChanged("BeetliWidth");
             }
         }
@@ -85,16 +88,17 @@ namespace BusinessLogic.ViewModel
 
             set
             {
-                _height = value;
-                _bottom = _top + value;
+                _Height = value;
+                _Bottom = _Top + value;
                 OnPropertyChanged("BeetliHeight");
             }
         }
 
+        #endregion Properties
 
         public bool IsPointInside(double x, double y)
         {
-            if( _left < x && x < (_left + _width) && _top < y && y < ( _top + _height) )
+            if( _Left < x && x < (_Left + _Width) && _Top < y && y < ( _Top + _Height) )
             {
                 return true;
             }
@@ -108,10 +112,10 @@ namespace BusinessLogic.ViewModel
         {
             double possibleX1, possibleY1, possibleX2, possibleY2;
 
-            possibleX1 = Math.Max(_left, x1);
-            possibleY1 = Math.Max(_top, y1);
-            possibleX2 = Math.Min(_right, x2);
-            possibleY2 = Math.Min(_bottom, y2);
+            possibleX1 = Math.Max(_Left, x1);
+            possibleY1 = Math.Max(_Top, y1);
+            possibleX2 = Math.Min(_Right, x2);
+            possibleY2 = Math.Min(_Bottom, y2);
 
             if( possibleX2 > possibleX1 && possibleY2 > possibleY1)
             {
