@@ -23,7 +23,7 @@ namespace BusinessLogic.ViewModel
         }
 
         #region Fields
-
+        
         private Rect _Rect = new Rect();
 
         #endregion Fields
@@ -89,7 +89,14 @@ namespace BusinessLogic.ViewModel
 
         public bool Contains(Point point)
         {
-            if( _Rect.Contains(point) )
+            return _Rect.Contains(point);
+        }
+
+        public bool IsInside(Point point)
+        {
+            Rect rect = new Rect(_Rect.X + 1, _Rect.Y + 1, _Rect.Width - 2, _Rect.Height - 2);
+
+            if (rect.Contains(point))
             {
                 return true;
             }
@@ -99,18 +106,19 @@ namespace BusinessLogic.ViewModel
             }
         }
 
-        public bool IsOverlapping(double x1, double y1, double x2, double y2)
+        public bool IntersectsWith(Point point1, Point point2)
         {
-            Rect rect = new Rect(new Point(x1, y1), new Point(x2, y2));
+            Rect rect = new Rect(point1, point2);
 
-            if(_Rect.IntersectsWith(rect) )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return _Rect.IntersectsWith(rect);
+        }
+
+        public bool IntersectsWithTheInside(Point point1, Point point2)
+        {
+            Rect rect1 = new Rect(_Rect.X + 1, _Rect.Y + 1, _Rect.Width - 2, _Rect.Height - 2);
+            Rect rect2 = new Rect(point1, point2);
+
+            return rect1.IntersectsWith(rect2);
         }
 
     }

@@ -8,13 +8,40 @@ namespace BusinessLogic.ViewModel
     {
         #region Fields
 
+        private Rect _Rect = new Rect();
+
         #endregion Fields
 
         #region Properties
 
         public string GartenName { get; set; }
-        public double GartenWidth { get; set; }
-        public double GartenHeight { get; set; }
+
+        public double GartenWidth
+        {
+            get
+            {
+                return _Rect.Width+200;
+            }
+
+            set
+            {
+                _Rect.Width = value-200;
+            }
+        }
+
+        public double GartenHeight
+        {
+            get
+            {
+                return _Rect.Height+200;
+            }
+
+            set
+            {
+                _Rect.Height = value-200;
+            }
+        }
+
 
         public ObservableCollection<BeetliData> TheBeetlis { get; set; }
 
@@ -76,42 +103,125 @@ namespace BusinessLogic.ViewModel
                 switch (HitType)
                 {
                     case HitType.Body:
+                        /*foreach (var beetli in beetlies)
+                        {
+                            if(!beetli.Equels(ActiveBeetli))
+                            {
+                                beetli.is
+                            }
+                        }*/
                         new_x += offset_x;
                         new_y += offset_y;
+
+                        if(new_x < _Rect.X)
+                        {
+                            new_x = _Rect.X;
+                        }
+                        if ((new_x + new_width) > _Rect.Right)
+                        {
+                            new_x = _Rect.Right - new_width;
+                        }
+                        if (new_y < _Rect.Y)
+                        {
+                            new_y = _Rect.Y;
+                        }
+                        if ((new_y + new_height) > _Rect.Bottom)
+                        {
+                            new_y = _Rect.Bottom - new_height;
+                        }
+
                         break;
                     case HitType.UL:
                         new_x += offset_x;
                         new_y += offset_y;
                         new_width -= offset_x;
                         new_height -= offset_y;
+
+                        if (new_x < _Rect.X)
+                        {
+                            new_x = _Rect.X;
+                        }
+                        if (new_y < _Rect.Y)
+                        {
+                            new_y = _Rect.Y;
+                        }
                         break;
                     case HitType.UR:
                         new_y += offset_y;
                         new_width += offset_x;
                         new_height -= offset_y;
+                        
+                        if ((new_x + new_width) > _Rect.Right)
+                        {
+                            new_width = _Rect.Right - new_x;
+                        }
+                        if (new_y < _Rect.Y)
+                        {
+                            new_y = _Rect.Y;
+                        }
+
                         break;
                     case HitType.LR:
                         new_width += offset_x;
                         new_height += offset_y;
+
+                        if ((new_x + new_width) > _Rect.Right)
+                        {
+                            new_width = _Rect.Right - new_x;
+                        }
+                        if ((new_y + new_height) > _Rect.Bottom)
+                        {
+                            new_height = _Rect.Bottom - new_y;
+                        }
                         break;
                     case HitType.LL:
                         new_x += offset_x;
                         new_width -= offset_x;
                         new_height += offset_y;
+
+                        if (new_x < _Rect.X)
+                        {
+                            new_x = _Rect.X;
+                        }
+                        if ((new_y + new_height) > _Rect.Bottom)
+                        {
+                            new_height = _Rect.Bottom - new_y;
+                        }
                         break;
                     case HitType.L:
                         new_x += offset_x;
                         new_width -= offset_x;
+
+                        if (new_x < _Rect.X)
+                        {
+                            new_x = _Rect.X;
+                        }
+
                         break;
                     case HitType.R:
                         new_width += offset_x;
+                        
+                        if ((new_x + new_width) > _Rect.Right)
+                        {
+                            new_width = _Rect.Right - new_x;
+                        }
                         break;
                     case HitType.B:
                         new_height += offset_y;
+
+                        if ((new_y + new_height) > _Rect.Bottom)
+                        {
+                            new_height = _Rect.Bottom - new_y;
+                        }
                         break;
                     case HitType.T:
                         new_y += offset_y;
                         new_height -= offset_y;
+                        
+                        if (new_y < _Rect.Y)
+                        {
+                            new_y = _Rect.Y;
+                        }
                         break;
                 }
 

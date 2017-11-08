@@ -153,8 +153,8 @@ namespace BusinessLogic.ViewModel
         {
             TheGarten = new GartenData() { GartenWidth = 500, GartenHeight = 500, GartenName = "Marcel's Garte" };
 
-            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 50 });
-            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 100, BeetliHeight = 100, BeetliWidth = 25 });
+            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 50, BeetliTop = 50, BeetliHeight = 50, BeetliWidth = 100 });
+            TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 150, BeetliTop = 40, BeetliHeight = 100, BeetliWidth = 25 });
             TheGarten.TheBeetlis.Add(new BeetliData { BeetliLeft = 250, BeetliTop = 50, BeetliHeight = 25, BeetliWidth = 100 });
         }
 
