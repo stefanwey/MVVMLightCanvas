@@ -85,6 +85,40 @@ namespace BusinessLogic.ViewModel
             }
         }
 
+        public double BeetliRight
+        {
+            get
+            {
+                return _Rect.Right;
+            }
+        }
+
+        public double BeetliBottom
+        {
+            get
+            {
+                return _Rect.Bottom;
+            }
+        }
+
+
+
+        public Point TopLeft
+        {
+            get
+            {
+                return _Rect.TopLeft;
+            }
+        }
+
+        public Point BottomRight
+        {
+            get
+            {
+                return _Rect.BottomRight;
+            }
+        }
+
         #endregion Properties
 
         public bool Contains(Point point)
@@ -117,6 +151,21 @@ namespace BusinessLogic.ViewModel
         {
             Rect rect1 = new Rect(_Rect.X + 1, _Rect.Y + 1, _Rect.Width - 2, _Rect.Height - 2);
             Rect rect2 = new Rect(point1, point2);
+
+            return rect1.IntersectsWith(rect2);
+        }
+
+        public bool IntersectsWithTheInside(BeetliData beetli)
+        {
+            Rect rect1 = new Rect(_Rect.X + 1, _Rect.Y + 1, _Rect.Width - 2, _Rect.Height - 2);
+            Rect rect2 = new Rect(beetli.TopLeft, beetli.BottomRight);
+
+            return rect1.IntersectsWith(rect2);
+        }
+
+        public bool IntersectsWithTheInside(Rect rect2)
+        {
+            Rect rect1 = new Rect(_Rect.X + 1, _Rect.Y + 1, _Rect.Width - 2, _Rect.Height - 2);
 
             return rect1.IntersectsWith(rect2);
         }

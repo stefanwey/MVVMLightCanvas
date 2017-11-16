@@ -99,20 +99,18 @@ namespace BusinessLogic.ViewModel
                 double new_width = ActiveBeetli.BeetliWidth;
                 double new_height = ActiveBeetli.BeetliHeight;
 
+                Rect newRect = new Rect(new_x, new_y, new_width, new_height);
+
                 // Update the rectangle.
                 switch (HitType)
                 {
                     case HitType.Body:
-                        /*foreach (var beetli in beetlies)
-                        {
-                            if(!beetli.Equels(ActiveBeetli))
-                            {
-                                beetli.is
-                            }
-                        }*/
                         new_x += offset_x;
                         new_y += offset_y;
 
+                        newRect.Location = new Point(new_x, new_y);
+                            
+                        // Check if Bettli ist still in the Garden
                         if(new_x < _Rect.X)
                         {
                             new_x = _Rect.X;
@@ -128,6 +126,32 @@ namespace BusinessLogic.ViewModel
                         if ((new_y + new_height) > _Rect.Bottom)
                         {
                             new_y = _Rect.Bottom - new_height;
+                        }
+
+                        foreach (var beetli in TheBeetlis)
+                        {
+                            if (!beetli.Equals(ActiveBeetli))
+                            {
+                                if(beetli.IntersectsWithTheInside(newRect))
+                                {
+                                    if(ActiveBeetli.BeetliLeft >= beetli.BeetliRight)
+                                    {
+                                        new_x = beetli.BeetliRight;
+                                    }
+                                    else if(ActiveBeetli.BeetliRight <= beetli.BeetliLeft)
+                                    {
+                                        new_x = beetli.BeetliLeft - ActiveBeetli.BeetliWidth;
+                                    }
+                                    else if (ActiveBeetli.BeetliTop >= beetli.BeetliBottom)
+                                    {
+                                        new_y = beetli.BeetliBottom;
+                                    }
+                                    else if(ActiveBeetli.BeetliBottom <= beetli.BeetliTop)
+                                    {
+                                        new_y = beetli.BeetliTop - ActiveBeetli.BeetliHeight;
+                                    }
+                                }
+                            }
                         }
 
                         break;
